@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
@@ -7,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.example.demo.entity.User;
 import com.example.demo.service.UserService;
@@ -27,8 +27,8 @@ class DemoApplicationTests {
 	@Commit
 	public void createUserTest() {
 		User user = new User();
-		user.setUserId("10002");
-		user.setNickName("王五2");
+		user.setUserId("10004");
+		user.setNickName("王五asdf");
 		user.setPassword("123456");
 
 		int id = userService.createUser(user);
@@ -37,7 +37,14 @@ class DemoApplicationTests {
 		// 测试完成后，通过手动设置回滚来确保数据库中的数据不被保留
 		// TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 
-		assertNotNull(user.getId());
+		assertNotNull(id, "用户创建失败");
+		assertNotNull(user.getUserId(), "用户UserID未设置");
+
+		// 验证从数据库中获取用户
+		User savedUser = userService.selectByPrimaryKey(23);
+		assertNotNull(savedUser, "从数据库中获取用户失败");
+		assertEquals("10001", savedUser.getUserId(), "用户ID不匹配");
+		assertEquals("张三", savedUser.getNickName(), "用户昵称不匹配");
 	}
 
 }
