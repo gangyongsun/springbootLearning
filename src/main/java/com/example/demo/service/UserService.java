@@ -5,6 +5,6 @@ import com.example.demo.entity.User;
 public interface UserService {
   int createUser(User user);
 
-  User selectByPrimaryKey(int userId);
+  User selectByPrimaryKey(int id);
 
 }
